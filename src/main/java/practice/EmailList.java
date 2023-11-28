@@ -4,56 +4,60 @@ package practice;
 import java.util.Iterator;
 import java.util.TreeSet;
 
-//For Regex
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+//JavaMail API
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+
 
 public class EmailList {
 
-    //Regex for validation email
-    private static final String REGEX = "^[A-Za-z0-9+_.-]+@(.+)$";
     private TreeSet<String> set;
 
     public EmailList(){
-
         this.set = new TreeSet<>();
     }
 
+    //Validation email
+    public static boolean isValidEmailAddress(String email) {
+        boolean result = true;
+        try {
+            InternetAddress emailAddr = new InternetAddress(email);
+            emailAddr.validate();
+        } catch (AddressException ex) {
+            result = false;
+        }
+        return result;
+    }
 
-    //Validation email before adding in TreeSet
-    public void ADD(String email){
-        Pattern pattern = Pattern.compile(REGEX);
-        Matcher matcher = pattern.matcher(email);
+    //Adding email in TreeSet
+    public boolean ADD(String email) {
 
-        if(matcher.matches()){
+        if (isValidEmailAddress(email)) {
             set.add(email);
-            System.out.println("Your email was added");
+            System.out.println("Your email was added\n");
+            return true;
+        } else {
+            System.out.println("Invalid email\n");
+            return false;
+        }
+    }
+
+    //Print email list
+    public boolean LIST(){
+        Iterator<String> itr = set.iterator();
+        if (set.isEmpty()){
+            System.out.println("The List is empty");
+            return false;
         }
         else {
-            System.out.println("Invalid email");
+            System.out.println("Email List:");
+            while(itr.hasNext()){
+                System.out.println(itr.next());
+            }
+            return true;
         }
-    }
-
-    //Print emails as much as have in TreeSet
-    public void LIST(){
-        Iterator<String> itr = set.iterator();
-        System.out.println("Emaiiiiiiiiiiils:");
-        while(itr.hasNext()){
-            System.out.println(itr.next());
-        }
-    }
-
-    public static void main(String[] args) {
-        EmailList list = new EmailList();
-
-        list.ADD("ssdfhiuh@gmail.com");
-        list.ADD("12344123!!!!!@ya.ru");
-        list.ADD("invalid@dick.shu");
-        list.ADD("Inddsfs.com");
-        list.LIST();
 
     }
-
 
 
 }
